@@ -1,0 +1,12 @@
+# FOR Backend
+obj/
+bin/
+*.log
+*.tmp
+*.bak
+*.swp
+*.pid
+*.seed
+*.env
+*.local
+*.sqlite3
