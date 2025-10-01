@@ -68,8 +68,15 @@ namespace ECommerce.API.Controllers
         {
             try
             {
-                await _context.Database.CanConnectAsync();
-                return Ok(new { message = "PostgreSQL connection successful!", timestamp = DateTime.UtcNow });
+                var canConnect = await _context.Database.CanConnectAsync();
+                if (canConnect)
+                {
+                    return Ok(new { message = "PostgreSQL connection successful!", timestamp = DateTime.UtcNow });
+                }
+                else
+                {
+                    return StatusCode(500, new { message = "PostgreSQL connection failed!", timestamp = DateTime.UtcNow });
+                }
             }
             catch (Exception ex)
             {
