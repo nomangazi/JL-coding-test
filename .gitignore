@@ -10,3 +10,14 @@ bin/
 *.env
 *.local
 *.sqlite3
+
+# FOR Frontend
+node_modules/
+dist/
+build/
+.cache/
+.next/
+out/
+.vscode/
+.idea/
+.DS_Store
