@@ -1,6 +1,6 @@
 namespace ECommerce.Core.Entities
 {
-    class PriceCalculation
+    public class PriceCalculation
     {
         public decimal TotalBeforeDiscount { get; set; }
         public decimal TotalDiscount { get; set; }
