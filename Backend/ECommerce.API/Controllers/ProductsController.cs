@@ -17,7 +17,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Products>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
             try
             {
@@ -31,7 +31,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Products>> GetProduct(int id)
+        public async Task<ActionResult<Product>> GetProduct(int id)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Products>> CreateProduct(Products product)
+        public async Task<ActionResult<Product>> CreateProduct(Product product)
         {
             try
             {
