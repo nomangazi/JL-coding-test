@@ -6,6 +6,9 @@ import type {
   UpdateCartItemRequest,
   ApplyCouponRequest,
   Coupon,
+  User,
+  UserCreateRequest,
+  UserUpdateRequest,
 } from "../types";
 
 const API_BASE_URL = "http://localhost:5090/api";
@@ -48,4 +51,29 @@ export const couponsApi = {
   create: (coupon: Omit<Coupon, "id">) => api.post<Coupon>("/coupons", coupon),
   update: (id: number, coupon: Partial<Coupon>) => api.put<Coupon>(`/coupons/${id}`, coupon),
   delete: (id: number) => api.delete(`/coupons/${id}`),
+};
+
+// Users API
+export const usersApi = {
+  getAll: () => api.get<User[]>("/user"),
+  getById: (id: number) => api.get<User>(`/user/${id}`),
+  getByEmail: (email: string) => api.get<User>(`/user/by-email/${email}`),
+  create: (user: UserCreateRequest) => api.post<User>("/user", user),
+  update: (id: number, user: UserUpdateRequest) => api.put<User>(`/user/${id}`, user),
+  delete: (id: number) => api.delete(`/user/${id}`),
+
+  // Authentication helpers (since we don't have JWT auth, we'll use email-based login)
+  login: async (email: string): Promise<User | null> => {
+    try {
+      const response = await api.get<User>(`/user/by-email/${email}`);
+      return response.data;
+    } catch {
+      return null;
+    }
+  },
+
+  register: async (userData: UserCreateRequest): Promise<User> => {
+    const response = await api.post<User>("/user", userData);
+    return response.data;
+  },
 };

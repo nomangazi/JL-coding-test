@@ -76,3 +76,36 @@ export interface Coupon {
   isAutoApplied: boolean;
   applicableProductIds?: number[];
 }
+
+// User types
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserCreateRequest {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export interface UserUpdateRequest {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface LoginRequest {
+  email: string;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+}

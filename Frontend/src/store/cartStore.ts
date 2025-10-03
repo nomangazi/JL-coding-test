@@ -7,39 +7,59 @@ interface CartStore {
   loading: boolean;
   error: string | null;
   userId: string;
+  showAuthModal: boolean;
+  pendingCartAction: (() => Promise<void>) | null;
 
   setUserId: (userId: string) => void;
   fetchCart: () => Promise<void>;
-  addItem: (request: AddCartItemRequest) => Promise<void>;
+  addItem: (request: AddCartItemRequest, requireAuth?: boolean) => Promise<void>;
   updateItem: (productId: number, request: UpdateCartItemRequest) => Promise<void>;
   removeItem: (productId: number) => Promise<void>;
   applyCoupon: (code: string) => Promise<void>;
   removeCoupon: (couponCode: string) => Promise<void>;
   clearCart: () => Promise<void>;
+  setShowAuthModal: (show: boolean) => void;
+  executePendingAction: () => Promise<void>;
+  clearPendingAction: () => void;
 }
 
 export const useCartStore = create<CartStore>((set, get) => ({
   cart: null,
   loading: false,
   error: null,
-  userId: "user-1", // Default user ID
+  userId: "",
+  showAuthModal: false,
+  pendingCartAction: null,
 
   setUserId: (userId: string) => set({ userId }),
 
   fetchCart: async () => {
+    const state = get();
+    if (!state.userId) return;
+
     set({ loading: true, error: null });
     try {
-      const { data } = await cartApi.getCart(get().userId);
+      const { data } = await cartApi.getCart(state.userId);
       set({ cart: data, loading: false });
-    } catch (error: unknown) {
+    } catch {
       set({ error: "Failed to fetch cart", loading: false });
     }
   },
 
-  addItem: async (request: AddCartItemRequest) => {
+  addItem: async (request: AddCartItemRequest, requireAuth = true) => {
+    const state = get();
+
+    // Check if user is authenticated when required
+    if (requireAuth && !state.userId) {
+      // Store the pending action
+      const pendingAction = () => get().addItem(request, false);
+      set({ showAuthModal: true, pendingCartAction: pendingAction });
+      return;
+    }
+
     set({ loading: true, error: null });
     try {
-      const { data } = await cartApi.addItem(get().userId, request);
+      const { data } = await cartApi.addItem(state.userId, request);
       set({ cart: data, loading: false });
     } catch (error: unknown) {
       set({ error: "Failed to add item", loading: false });
@@ -101,4 +121,16 @@ export const useCartStore = create<CartStore>((set, get) => ({
       throw error;
     }
   },
+
+  setShowAuthModal: (show: boolean) => set({ showAuthModal: show }),
+
+  executePendingAction: async () => {
+    const { pendingCartAction } = get();
+    if (pendingCartAction) {
+      await pendingCartAction();
+      set({ pendingCartAction: null });
+    }
+  },
+
+  clearPendingAction: () => set({ pendingCartAction: null }),
 }));

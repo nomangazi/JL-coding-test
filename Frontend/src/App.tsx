@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useCartStore } from "./store/cartStore";
 import { useProductStore } from "./store/productStore";
+import { useUserStore } from "./store/userStore";
 import { formatCurrency } from "./lib/utils";
 import { Button } from "./components/ui/button";
+import { GlobalAuthModal } from "./components/GlobalAuthModal";
 import type { Product } from "./types";
 
 function App() {
   const { cart, loading: cartLoading, fetchCart, addItem, updateItem, removeItem, applyCoupon, removeCoupon } = useCartStore();
+  const { initializeAuth, user, isAuthenticated } = useUserStore();
 
   const { products, loading: productsLoading, fetchProducts } = useProductStore();
   const [couponCode, setCouponCode] = useState("");
@@ -14,16 +17,17 @@ function App() {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
+    initializeAuth();
     fetchCart();
     fetchProducts();
-  }, [fetchCart, fetchProducts]);
+  }, [fetchCart, fetchProducts, initializeAuth]);
 
   const handleAddToCart = async (product: Product) => {
     try {
       await addItem({ productId: product.id, quantity: 1 });
       setSuccess(`Added ${product.name} to cart`);
       setTimeout(() => setSuccess(""), 3000);
-    } catch (err) {
+    } catch {
       setError("Failed to add item");
       setTimeout(() => setError(""), 3000);
     }
@@ -36,7 +40,7 @@ function App() {
       } else {
         await updateItem(productId, { quantity });
       }
-    } catch (err) {
+    } catch {
       setError("Failed to update quantity");
       setTimeout(() => setError(""), 3000);
     }
@@ -51,7 +55,7 @@ function App() {
       setSuccess(`Coupon ${couponCode} applied!`);
       setCouponCode("");
       setTimeout(() => setSuccess(""), 3000);
-    } catch (err) {
+    } catch {
       setError("Failed to apply coupon");
       setTimeout(() => setError(""), 3000);
     }
@@ -60,7 +64,7 @@ function App() {
   const handleRemoveCoupon = async (code: string) => {
     try {
       await removeCoupon(code);
-    } catch (err) {
+    } catch {
       setError("Failed to remove coupon");
       setTimeout(() => setError(""), 3000);
     }
@@ -69,7 +73,27 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">E-Commerce Cart & Coupon System</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900">E-Commerce Cart & Coupon System</h1>
+
+          <div className="flex items-center space-x-4">
+            {isAuthenticated && user ? (
+              <div className="flex items-center space-x-3">
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                  <p className="text-xs text-gray-500">{user.email}</p>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => useUserStore.getState().logout()}>
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button variant="outline" onClick={() => useCartStore.getState().setShowAuthModal(true)}>
+                Login
+              </Button>
+            )}
+          </div>
+        </div>
 
         {error && <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">{error}</div>}
 
@@ -218,6 +242,8 @@ function App() {
           </div>
         </div>
       </div>
+
+      <GlobalAuthModal />
     </div>
   );
 }
