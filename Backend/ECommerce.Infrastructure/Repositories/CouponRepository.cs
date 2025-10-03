@@ -87,7 +87,7 @@ namespace ECommerce.Infrastructure.Repositories
         {
             return await _context.CouponUsages
                 .Include(cu => cu.Coupon)
-                .Where(cu => cu.Coupon.Code == couponCode && cu.UserId == userId.ToString())
+                .Where(cu => cu.Coupon.Code == couponCode && cu.UserId == userId)
                 .CountAsync();
         }
 

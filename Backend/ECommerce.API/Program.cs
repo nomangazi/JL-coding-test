@@ -33,11 +33,13 @@ builder.Services.AddCors(options =>
 });
 
 // Dependency Injection - Repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 
 // Dependency Injection - Services
+builder.Services.AddScoped<IUserService, ECommerce.API.Services.UserService>();
 builder.Services.AddScoped<ICartService, ECommerce.API.Services.CartService>();
 builder.Services.AddScoped<ICouponService, ECommerce.API.Services.CouponService>();
 

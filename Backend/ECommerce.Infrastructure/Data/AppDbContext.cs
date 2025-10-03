@@ -10,6 +10,13 @@ namespace ECommerce.Infrastructure.Data
         {
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.ConfigureWarnings(warnings =>
+                warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+        }
+
+        public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
@@ -21,11 +28,31 @@ namespace ECommerce.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // User configuration
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
+                entity.Property(e => e.Phone).HasMaxLength(20);
+                entity.HasIndex(e => e.Email).IsUnique();
+
+                entity.HasMany(e => e.Carts)
+                    .WithOne(c => c.User)
+                    .HasForeignKey(c => c.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(e => e.CouponUsages)
+                    .WithOne(cu => cu.User)
+                    .HasForeignKey(cu => cu.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
             // Cart configuration
             modelBuilder.Entity<Cart>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.UserId).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.UserId).IsRequired();
                 entity.HasIndex(e => e.UserId);
 
                 entity.HasMany(e => e.Items)
@@ -91,12 +118,12 @@ namespace ECommerce.Infrastructure.Data
             modelBuilder.Entity<CouponUsage>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.UserId).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.UserId).IsRequired();
                 entity.HasIndex(e => new { e.CouponId, e.UserId });
             });
 
-            // Seed data
-            SeedData(modelBuilder);
+            // Seed data - temporarily disabled for initial migration
+            // SeedData(modelBuilder);
         }
 
         private void SeedData(ModelBuilder modelBuilder)
@@ -160,8 +187,8 @@ namespace ECommerce.Infrastructure.Data
                     DiscountType = DiscountType.Fixed,
                     DiscountValue = 100,
                     IsAutoApplied = false,
-                    StartDate = DateTime.UtcNow.AddDays(-30),
-                    ExpiryDate = DateTime.UtcNow.AddMonths(6),
+                    StartDate = new DateTime(2024, 9, 1),
+                    ExpiryDate = new DateTime(2025, 9, 1),
                     MinimumTotalPrice = 500,
                     MaxTotalUses = 1000,
                     MaxUsesPerUser = 5,
@@ -178,8 +205,8 @@ namespace ECommerce.Infrastructure.Data
                     DiscountValue = 10,
                     MaxDiscountAmount = 50,
                     IsAutoApplied = true,
-                    StartDate = DateTime.UtcNow.AddDays(-30),
-                    ExpiryDate = DateTime.UtcNow.AddMonths(6),
+                    StartDate = new DateTime(2024, 9, 1),
+                    ExpiryDate = new DateTime(2025, 9, 1),
                     MinimumCartItems = 2,
                     MaxTotalUses = null, // Unlimited
                     MaxUsesPerUser = null, // Unlimited
@@ -196,8 +223,8 @@ namespace ECommerce.Infrastructure.Data
                     DiscountValue = 20,
                     MaxDiscountAmount = 200,
                     IsAutoApplied = false,
-                    StartDate = DateTime.UtcNow.AddDays(-10),
-                    ExpiryDate = DateTime.UtcNow.AddMonths(3),
+                    StartDate = new DateTime(2024, 9, 20),
+                    ExpiryDate = new DateTime(2025, 3, 1),
                     MinimumTotalPrice = 100,
                     MaxTotalUses = 500,
                     MaxUsesPerUser = 3,
@@ -213,8 +240,8 @@ namespace ECommerce.Infrastructure.Data
                     DiscountType = DiscountType.Fixed,
                     DiscountValue = 15,
                     IsAutoApplied = false,
-                    StartDate = DateTime.UtcNow.AddDays(-5),
-                    ExpiryDate = DateTime.UtcNow.AddMonths(12),
+                    StartDate = new DateTime(2024, 9, 25),
+                    ExpiryDate = new DateTime(2025, 12, 1),
                     MinimumTotalPrice = 50,
                     MaxTotalUses = null,
                     MaxUsesPerUser = 10,

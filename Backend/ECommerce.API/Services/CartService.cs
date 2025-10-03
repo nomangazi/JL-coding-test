@@ -210,7 +210,7 @@ namespace ECommerce.API.Services
             var usage = new CouponUsage
             {
                 CouponId = coupon.Id,
-                UserId = userId.ToString(),
+                UserId = userId,
                 UsedAt = DateTime.UtcNow
             };
             await _couponRepository.AddCouponUsageAsync(usage);
