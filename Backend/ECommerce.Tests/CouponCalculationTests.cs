@@ -1,5 +1,4 @@
 using ECommerce.Core.Entities;
-using Xunit;
 
 namespace ECommerce.Tests;
 
