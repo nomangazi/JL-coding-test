@@ -3,6 +3,7 @@ using System;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251003135203_FixCartUserNavigationProperty")]
+    partial class FixCartUserNavigationProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +52,7 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("CartId", "CouponId")
                         .IsUnique();
 
-                    b.ToTable("AppliedCoupons", (string)null);
+                    b.ToTable("AppliedCoupons");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Cart", b =>
@@ -73,7 +76,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.CartItem", b =>
@@ -102,7 +105,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Coupon", b =>
@@ -176,7 +179,7 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
 
                     b.HasData(
                         new
@@ -301,7 +304,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CouponId", "UserId");
 
-                    b.ToTable("CouponUsages", (string)null);
+                    b.ToTable("CouponUsages");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Product", b =>
@@ -352,7 +355,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
                     b.HasData(
                         new
@@ -506,7 +509,7 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.AppliedCoupon", b =>

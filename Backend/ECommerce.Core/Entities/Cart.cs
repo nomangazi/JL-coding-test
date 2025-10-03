@@ -6,7 +6,7 @@ namespace ECommerce.Core.Entities
         public int UserId { get; set; }
 
         // Navigation properties
-        public User User { get; set; } = new();
+        public User? User { get; set; }
         public List<CartItem> Items { get; set; } = [];
         public List<AppliedCoupon> AppliedCoupons { get; set; } = [];
 

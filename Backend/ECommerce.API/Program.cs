@@ -1,5 +1,6 @@
 using ECommerce.Core.Interfaces;
 using ECommerce.Core.Services;
+using ECommerce.Core.Entities;
 using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +63,45 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.Migrate(); // Applies all pending migrations
+
+    // Seed users if none exist
+    if (!dbContext.Users.Any())
+    {
+        Console.WriteLine("No users found. Seeding initial users...");
+        dbContext.Users.AddRange(
+            new User
+            {
+                Name = "John Doe",
+                Email = "john.doe@example.com",
+                Phone = "555-0101",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new User
+            {
+                Name = "Jane Smith",
+                Email = "jane.smith@example.com",
+                Phone = "555-0102",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new User
+            {
+                Name = "Test User",
+                Email = "test@example.com",
+                Phone = "555-0103",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+        );
+        await dbContext.SaveChangesAsync();
+        Console.WriteLine("Users seeded successfully!");
+    }
+    else
+    {
+        var userCount = await dbContext.Users.CountAsync();
+        Console.WriteLine($"Found {userCount} existing users in database.");
+    }
 }
 
 // Map controllers
