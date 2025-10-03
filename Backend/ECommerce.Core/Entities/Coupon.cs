@@ -38,6 +38,10 @@ namespace ECommerce.Core.Entities
         public List<AppliedCoupon> AppliedCoupons { get; set; } = new List<AppliedCoupon>(); // Coupons applied to carts
         public List<CouponUsage> CouponUsages { get; set; } = new List<CouponUsage>();
 
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? DeletedAt { get; set; } = null;
+
         // Helper methods
         public List<int> GetApplicableProductIds()
         {

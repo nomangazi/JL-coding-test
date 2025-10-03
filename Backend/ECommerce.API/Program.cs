@@ -1,4 +1,7 @@
+using ECommerce.Core.Interfaces;
+using ECommerce.Core.Services;
 using ECommerce.Infrastructure.Data;
+using ECommerce.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,8 +17,29 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add AutoMapper
+// AutoMapper (for DTO mapping)
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// CORS configuration for frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
+// Dependency Injection - Repositories
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+
+// Dependency Injection - Services
+builder.Services.AddScoped<ICartService, ECommerce.API.Services.CartService>();
+builder.Services.AddScoped<ICouponService, ECommerce.API.Services.CouponService>();
 
 var app = builder.Build();
 
@@ -27,6 +51,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Use CORS
+app.UseCors("AllowFrontend");
+
 // Map controllers
 app.MapControllers();
+
 app.Run();
