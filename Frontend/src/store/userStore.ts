@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { usersApi } from "../lib/api";
-import type { User, UserCreateRequest, AuthState } from "../types";
+import type { UserCreateRequest, AuthState } from "../types";
 
 interface UserStore extends AuthState {
   login: (email: string) => Promise<boolean>;
