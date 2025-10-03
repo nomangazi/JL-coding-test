@@ -24,6 +24,7 @@
     "noUncheckedSideEffectImports": true,
 
     /* shadcn ui */
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": [
