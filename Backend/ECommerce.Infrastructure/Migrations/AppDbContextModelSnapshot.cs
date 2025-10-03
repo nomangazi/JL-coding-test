@@ -177,6 +177,102 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Coupons");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ApplicableProductIdsJson = "",
+                            Code = "WELCOME50",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(1877),
+                            CurrentTotalUses = 0,
+                            Description = "Welcome bonus - $50 off your first order over $200",
+                            DiscountType = 1,
+                            DiscountValue = 50m,
+                            ExpiryDate = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            IsAutoApplied = false,
+                            MaxUsesPerUser = 1,
+                            MinimumTotalPrice = 200m,
+                            StartDate = new DateTime(2024, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(1878)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ApplicableProductIdsJson = "",
+                            Code = "AUTO15",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4089),
+                            CurrentTotalUses = 0,
+                            Description = "Automatic 15% off on orders over $100",
+                            DiscountType = 2,
+                            DiscountValue = 15m,
+                            ExpiryDate = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            IsAutoApplied = true,
+                            MaxDiscountAmount = 75m,
+                            MinimumTotalPrice = 100m,
+                            StartDate = new DateTime(2024, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4090)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ApplicableProductIdsJson = "[1,2,3,6,7,8]",
+                            Code = "TECH25",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4227),
+                            CurrentTotalUses = 0,
+                            Description = "25% off on all electronics - limited time!",
+                            DiscountType = 2,
+                            DiscountValue = 25m,
+                            ExpiryDate = new DateTime(2025, 3, 31, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            IsAutoApplied = false,
+                            MaxDiscountAmount = 250m,
+                            MaxTotalUses = 500,
+                            MaxUsesPerUser = 2,
+                            MinimumTotalPrice = 50m,
+                            StartDate = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4228)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ApplicableProductIdsJson = "",
+                            Code = "FREESHIP",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4232),
+                            CurrentTotalUses = 0,
+                            Description = "Free shipping - $15 off on orders over $75",
+                            DiscountType = 1,
+                            DiscountValue = 15m,
+                            ExpiryDate = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            IsAutoApplied = false,
+                            MaxUsesPerUser = 5,
+                            MinimumTotalPrice = 75m,
+                            StartDate = new DateTime(2024, 9, 25, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4232)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ApplicableProductIdsJson = "",
+                            Code = "BULK30",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4234),
+                            CurrentTotalUses = 0,
+                            Description = "30% off when you buy 3 or more items",
+                            DiscountType = 2,
+                            DiscountValue = 30m,
+                            ExpiryDate = new DateTime(2025, 6, 30, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            IsAutoApplied = false,
+                            MaxDiscountAmount = 300m,
+                            MaxTotalUses = 200,
+                            MaxUsesPerUser = 1,
+                            MinimumCartItems = 3,
+                            StartDate = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4235)
+                        });
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.CouponUsage", b =>
@@ -257,6 +353,120 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Category = "Electronics",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7632),
+                            Description = "High-performance laptop for professionals",
+                            ImageUrl = "",
+                            IsActive = true,
+                            Name = "Laptop",
+                            Price = 1000m,
+                            PriceOffice = 0m,
+                            Stock = 15,
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7782)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Category = "Electronics",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7922),
+                            Description = "Ergonomic wireless mouse with long battery life",
+                            ImageUrl = "",
+                            IsActive = true,
+                            Name = "Wireless Mouse",
+                            Price = 25m,
+                            PriceOffice = 0m,
+                            Stock = 50,
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7922)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Category = "Electronics",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7924),
+                            Description = "RGB mechanical keyboard with tactile switches",
+                            ImageUrl = "",
+                            IsActive = true,
+                            Name = "Mechanical Keyboard",
+                            Price = 75m,
+                            PriceOffice = 0m,
+                            Stock = 25,
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7925)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Category = "Accessories",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7927),
+                            Description = "Fast charging USB-C cable 6 feet long",
+                            ImageUrl = "",
+                            IsActive = true,
+                            Name = "USB-C Cable",
+                            Price = 15m,
+                            PriceOffice = 0m,
+                            Stock = 100,
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7927)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Category = "Accessories",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7929),
+                            Description = "Adjustable aluminum laptop stand for better ergonomics",
+                            ImageUrl = "",
+                            IsActive = true,
+                            Name = "Laptop Stand",
+                            Price = 45m,
+                            PriceOffice = 0m,
+                            Stock = 30,
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7929)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Category = "Electronics",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7931),
+                            Description = "27-inch 4K gaming monitor with 144Hz refresh rate",
+                            ImageUrl = "",
+                            IsActive = true,
+                            Name = "Gaming Monitor",
+                            Price = 350m,
+                            PriceOffice = 0m,
+                            Stock = 12,
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7931)
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Category = "Electronics",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7933),
+                            Description = "Latest flagship smartphone with 5G connectivity",
+                            ImageUrl = "",
+                            IsActive = true,
+                            Name = "Smartphone",
+                            Price = 800m,
+                            PriceOffice = 0m,
+                            Stock = 20,
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7933)
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Category = "Electronics",
+                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7935),
+                            Description = "Premium noise-cancelling wireless headphones",
+                            ImageUrl = "",
+                            IsActive = true,
+                            Name = "Wireless Headphones",
+                            Price = 150m,
+                            PriceOffice = 0m,
+                            Stock = 35,
+                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7935)
+                        });
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.User", b =>

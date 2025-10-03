@@ -57,6 +57,13 @@ app.UseHttpsRedirection();
 // Use CORS
 app.UseCors("AllowFrontend");
 
+// Apply pending migrations and create database if not exists
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate(); // Applies all pending migrations
+}
+
 // Map controllers
 app.MapControllers();
 

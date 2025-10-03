@@ -122,11 +122,11 @@ namespace ECommerce.Infrastructure.Data
                 entity.HasIndex(e => new { e.CouponId, e.UserId });
             });
 
-            // Seed data - temporarily disabled for initial migration
-            // SeedData(modelBuilder);
+            // Seed data
+            SeedData(modelBuilder);
         }
 
-        private void SeedData(ModelBuilder modelBuilder)
+        private static void SeedData(ModelBuilder modelBuilder)
         {
             // Seed Products
             modelBuilder.Entity<Product>().HasData(
@@ -134,46 +134,105 @@ namespace ECommerce.Infrastructure.Data
                 {
                     Id = 1,
                     Name = "Laptop",
-                    Description = "High-performance laptop",
+                    Description = "High-performance laptop for professionals",
                     Price = 1000,
                     Category = "Electronics",
-                    IsActive = true
+                    Stock = 15,
+                    IsActive = true,
+                    ImageUrl = "",
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
                 },
                 new Product
                 {
                     Id = 2,
                     Name = "Wireless Mouse",
-                    Description = "Ergonomic wireless mouse",
+                    Description = "Ergonomic wireless mouse with long battery life",
                     Price = 25,
                     Category = "Electronics",
-                    IsActive = true
+                    Stock = 50,
+                    IsActive = true,
+                    ImageUrl = "",
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
                 },
                 new Product
                 {
                     Id = 3,
                     Name = "Mechanical Keyboard",
-                    Description = "RGB mechanical keyboard",
+                    Description = "RGB mechanical keyboard with tactile switches",
                     Price = 75,
                     Category = "Electronics",
-                    IsActive = true
+                    Stock = 25,
+                    IsActive = true,
+                    ImageUrl = "",
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
                 },
                 new Product
                 {
                     Id = 4,
                     Name = "USB-C Cable",
-                    Description = "Fast charging USB-C cable",
+                    Description = "Fast charging USB-C cable 6 feet long",
                     Price = 15,
                     Category = "Accessories",
-                    IsActive = true
+                    Stock = 100,
+                    IsActive = true,
+                    ImageUrl = "",
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
                 },
                 new Product
                 {
                     Id = 5,
                     Name = "Laptop Stand",
-                    Description = "Adjustable aluminum laptop stand",
+                    Description = "Adjustable aluminum laptop stand for better ergonomics",
                     Price = 45,
                     Category = "Accessories",
-                    IsActive = true
+                    Stock = 30,
+                    IsActive = true,
+                    ImageUrl = "",
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
+                },
+                new Product
+                {
+                    Id = 6,
+                    Name = "Gaming Monitor",
+                    Description = "27-inch 4K gaming monitor with 144Hz refresh rate",
+                    Price = 350,
+                    Category = "Electronics",
+                    Stock = 12,
+                    IsActive = true,
+                    ImageUrl = "",
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
+                },
+                new Product
+                {
+                    Id = 7,
+                    Name = "Smartphone",
+                    Description = "Latest flagship smartphone with 5G connectivity",
+                    Price = 800,
+                    Category = "Electronics",
+                    Stock = 20,
+                    IsActive = true,
+                    ImageUrl = "",
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
+                },
+                new Product
+                {
+                    Id = 8,
+                    Name = "Wireless Headphones",
+                    Description = "Premium noise-cancelling wireless headphones",
+                    Price = 150,
+                    Category = "Electronics",
+                    Stock = 35,
+                    IsActive = true,
+                    ImageUrl = "",
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
                 }
             );
 
@@ -182,16 +241,16 @@ namespace ECommerce.Infrastructure.Data
                 new Coupon
                 {
                     Id = 1,
-                    Code = "SAVE100",
-                    Description = "Save $100 on orders over $500",
+                    Code = "WELCOME50",
+                    Description = "Welcome bonus - $50 off your first order over $200",
                     DiscountType = DiscountType.Fixed,
-                    DiscountValue = 100,
+                    DiscountValue = 50,
                     IsAutoApplied = false,
-                    StartDate = new DateTime(2024, 9, 1),
-                    ExpiryDate = new DateTime(2025, 9, 1),
-                    MinimumTotalPrice = 500,
-                    MaxTotalUses = 1000,
-                    MaxUsesPerUser = 5,
+                    StartDate = DateTime.SpecifyKind(new DateTime(2024, 9, 1), DateTimeKind.Utc),
+                    ExpiryDate = DateTime.SpecifyKind(new DateTime(2025, 12, 31), DateTimeKind.Utc),
+                    MinimumTotalPrice = 200,
+                    MaxTotalUses = null, // Unlimited
+                    MaxUsesPerUser = 1, // First time users only
                     CurrentTotalUses = 0,
                     IsActive = true,
                     ApplicableProductIdsJson = string.Empty // Applies to all products
@@ -199,15 +258,15 @@ namespace ECommerce.Infrastructure.Data
                 new Coupon
                 {
                     Id = 2,
-                    Code = "AUTO10",
-                    Description = "Automatic 10% off on 2+ items",
+                    Code = "AUTO15",
+                    Description = "Automatic 15% off on orders over $100",
                     DiscountType = DiscountType.Percentage,
-                    DiscountValue = 10,
-                    MaxDiscountAmount = 50,
+                    DiscountValue = 15,
+                    MaxDiscountAmount = 75,
                     IsAutoApplied = true,
-                    StartDate = new DateTime(2024, 9, 1),
-                    ExpiryDate = new DateTime(2025, 9, 1),
-                    MinimumCartItems = 2,
+                    StartDate = DateTime.SpecifyKind(new DateTime(2024, 9, 1), DateTimeKind.Utc),
+                    ExpiryDate = DateTime.SpecifyKind(new DateTime(2025, 12, 31), DateTimeKind.Utc),
+                    MinimumTotalPrice = 100,
                     MaxTotalUses = null, // Unlimited
                     MaxUsesPerUser = null, // Unlimited
                     CurrentTotalUses = 0,
@@ -217,36 +276,55 @@ namespace ECommerce.Infrastructure.Data
                 new Coupon
                 {
                     Id = 3,
-                    Code = "ELECTRONICS20",
-                    Description = "20% off on electronics (Product IDs 1,2,3)",
+                    Code = "TECH25",
+                    Description = "25% off on all electronics - limited time!",
                     DiscountType = DiscountType.Percentage,
-                    DiscountValue = 20,
-                    MaxDiscountAmount = 200,
+                    DiscountValue = 25,
+                    MaxDiscountAmount = 250,
                     IsAutoApplied = false,
-                    StartDate = new DateTime(2024, 9, 20),
-                    ExpiryDate = new DateTime(2025, 3, 1),
-                    MinimumTotalPrice = 100,
+                    StartDate = DateTime.SpecifyKind(new DateTime(2024, 10, 1), DateTimeKind.Utc),
+                    ExpiryDate = DateTime.SpecifyKind(new DateTime(2025, 3, 31), DateTimeKind.Utc),
+                    MinimumTotalPrice = 50,
                     MaxTotalUses = 500,
-                    MaxUsesPerUser = 3,
+                    MaxUsesPerUser = 2,
                     CurrentTotalUses = 0,
                     IsActive = true,
-                    ApplicableProductIdsJson = "[1,2,3]" // Only for electronics products
+                    ApplicableProductIdsJson = "[1,2,3,6,7,8]" // Electronics products
                 },
                 new Coupon
                 {
                     Id = 4,
                     Code = "FREESHIP",
-                    Description = "Free shipping - $15 off",
+                    Description = "Free shipping - $15 off on orders over $75",
                     DiscountType = DiscountType.Fixed,
                     DiscountValue = 15,
                     IsAutoApplied = false,
-                    StartDate = new DateTime(2024, 9, 25),
-                    ExpiryDate = new DateTime(2025, 12, 1),
-                    MinimumTotalPrice = 50,
+                    StartDate = DateTime.SpecifyKind(new DateTime(2024, 9, 25), DateTimeKind.Utc),
+                    ExpiryDate = DateTime.SpecifyKind(new DateTime(2025, 12, 31), DateTimeKind.Utc),
+                    MinimumTotalPrice = 75,
                     MaxTotalUses = null,
-                    MaxUsesPerUser = 10,
+                    MaxUsesPerUser = 5,
                     CurrentTotalUses = 0,
                     IsActive = true,
+                    ApplicableProductIdsJson = string.Empty // Applies to all products
+                },
+                new Coupon
+                {
+                    Id = 5,
+                    Code = "BULK30",
+                    Description = "30% off when you buy 3 or more items",
+                    DiscountType = DiscountType.Percentage,
+                    DiscountValue = 30,
+                    MaxDiscountAmount = 300,
+                    IsAutoApplied = false,
+                    StartDate = DateTime.SpecifyKind(new DateTime(2024, 10, 1), DateTimeKind.Utc),
+                    ExpiryDate = DateTime.SpecifyKind(new DateTime(2025, 6, 30), DateTimeKind.Utc),
+                    MinimumCartItems = 3,
+                    MaxTotalUses = 200,
+                    MaxUsesPerUser = 1,
+                    CurrentTotalUses = 0,
+                    IsActive = true,
+                    ApplicableProductIdsJson = string.Empty // Applies to all products
                 }
             );
         }

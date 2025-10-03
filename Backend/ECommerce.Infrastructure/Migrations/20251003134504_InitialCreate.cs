@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ECommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -186,6 +188,33 @@ namespace ECommerce.Infrastructure.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Coupons",
+                columns: new[] { "Id", "ApplicableProductIdsJson", "Code", "CreatedAt", "CurrentTotalUses", "DeletedAt", "Description", "DiscountType", "DiscountValue", "ExpiryDate", "IsActive", "IsAutoApplied", "MaxDiscountAmount", "MaxTotalUses", "MaxUsesPerUser", "MinimumCartItems", "MinimumTotalPrice", "StartDate", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, "", "WELCOME50", new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(1877), 0, null, "Welcome bonus - $50 off your first order over $200", 1, 50m, new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Utc), true, false, null, null, 1, null, 200m, new DateTime(2024, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(1878) },
+                    { 2, "", "AUTO15", new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4089), 0, null, "Automatic 15% off on orders over $100", 2, 15m, new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Utc), true, true, 75m, null, null, null, 100m, new DateTime(2024, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4090) },
+                    { 3, "[1,2,3,6,7,8]", "TECH25", new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4227), 0, null, "25% off on all electronics - limited time!", 2, 25m, new DateTime(2025, 3, 31, 0, 0, 0, 0, DateTimeKind.Utc), true, false, 250m, 500, 2, null, 50m, new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4228) },
+                    { 4, "", "FREESHIP", new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4232), 0, null, "Free shipping - $15 off on orders over $75", 1, 15m, new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Utc), true, false, null, null, 5, null, 75m, new DateTime(2024, 9, 25, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4232) },
+                    { 5, "", "BULK30", new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4234), 0, null, "30% off when you buy 3 or more items", 2, 30m, new DateTime(2025, 6, 30, 0, 0, 0, 0, DateTimeKind.Utc), true, false, 300m, 200, 1, 3, null, new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4235) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Category", "CreatedAt", "DeletedAt", "Description", "ImageUrl", "IsActive", "Name", "Price", "PriceOffice", "Stock", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, "Electronics", new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7632), null, "High-performance laptop for professionals", "", true, "Laptop", 1000m, 0m, 15, new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7782) },
+                    { 2, "Electronics", new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7922), null, "Ergonomic wireless mouse with long battery life", "", true, "Wireless Mouse", 25m, 0m, 50, new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7922) },
+                    { 3, "Electronics", new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7924), null, "RGB mechanical keyboard with tactile switches", "", true, "Mechanical Keyboard", 75m, 0m, 25, new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7925) },
+                    { 4, "Accessories", new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7927), null, "Fast charging USB-C cable 6 feet long", "", true, "USB-C Cable", 15m, 0m, 100, new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7927) },
+                    { 5, "Accessories", new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7929), null, "Adjustable aluminum laptop stand for better ergonomics", "", true, "Laptop Stand", 45m, 0m, 30, new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7929) },
+                    { 6, "Electronics", new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7931), null, "27-inch 4K gaming monitor with 144Hz refresh rate", "", true, "Gaming Monitor", 350m, 0m, 12, new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7931) },
+                    { 7, "Electronics", new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7933), null, "Latest flagship smartphone with 5G connectivity", "", true, "Smartphone", 800m, 0m, 20, new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7933) },
+                    { 8, "Electronics", new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7935), null, "Premium noise-cancelling wireless headphones", "", true, "Wireless Headphones", 150m, 0m, 35, new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7935) }
                 });
 
             migrationBuilder.CreateIndex(
