@@ -75,14 +75,16 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    // Check if DB exists first
-    if (dbContext.Database.EnsureCreated())// Returns true if new DB was created
+    if (!dbContext.Database.CanConnect())
     {
-        dbContext.Database.Migrate(); // Applies all pending migrations
+        dbContext.Database.Migrate();
     }
     else
     {
-        dbContext.Database.Migrate(); // Applies all pending migrations
+        if (dbContext.Database.GetPendingMigrations().Any())
+        {
+            dbContext.Database.Migrate();
+        }
     }
 
 
