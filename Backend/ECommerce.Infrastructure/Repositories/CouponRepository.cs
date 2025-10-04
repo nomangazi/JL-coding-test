@@ -16,8 +16,11 @@ namespace ECommerce.Infrastructure.Repositories
 
         public async Task<Coupon?> GetCouponByCodeAsync(string code)
         {
+            System.Console.WriteLine("++++++++++++++++++");
+            System.Console.WriteLine(code);
+            System.Console.WriteLine("++++++++++++++++++");
             return await _context.Coupons
-                .FirstOrDefaultAsync(c => c.Code == code && c.DeletedAt == null);
+                .FirstOrDefaultAsync(c => c.Code.ToUpper() == code.ToUpper() && c.DeletedAt == null);
         }
 
         public async Task<Coupon?> GetCouponByIdAsync(int id)

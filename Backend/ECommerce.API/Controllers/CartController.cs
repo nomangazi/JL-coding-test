@@ -93,12 +93,12 @@ namespace ECommerce.API.Controllers
 
         // POST: api/cart/{userId}/coupons
         [HttpPost("{userId}/coupons")]
-        public async Task<ActionResult<CartResponse>> ApplyCoupon(
-            int userId,
-            [FromBody] ApplyCouponRequest request)
+        public async Task<ActionResult<CartResponse>> ApplyCoupon([FromRoute] int userId, [FromBody] ApplyCouponRequest request)
         {
             try
             {
+                // validate request
+                request.Validate();
                 var cart = await _cartService.ApplyCouponAsync(userId, request.Code);
                 return Ok(cart);
             }
