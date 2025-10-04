@@ -35,7 +35,10 @@ export const useCartStore = create<CartStore>((set, get) => ({
 
   fetchCart: async () => {
     const state = get();
-    if (!state.userId) return;
+    // Only fetch cart if userId is a valid non-empty string and represents a positive integer
+    if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
+      return;
+    }
 
     set({ loading: true, error: null });
     try {
@@ -49,11 +52,17 @@ export const useCartStore = create<CartStore>((set, get) => ({
   addItem: async (request: AddCartItemRequest, requireAuth = true) => {
     const state = get();
 
-    // Check if user is authenticated when required
-    if (requireAuth && !state.userId) {
+    // Check if user is authenticated when required or if userId is invalid
+    if (requireAuth && (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0)) {
       // Store the pending action
       const pendingAction = () => get().addItem(request, false);
       set({ showAuthModal: true, pendingCartAction: pendingAction });
+      return;
+    }
+
+    // Double-check userId validity before making API call
+    if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
+      set({ error: "Invalid user session. Please login first.", loading: false });
       return;
     }
 
@@ -68,9 +77,16 @@ export const useCartStore = create<CartStore>((set, get) => ({
   },
 
   updateItem: async (productId: number, request: UpdateCartItemRequest) => {
+    const state = get();
+    // Check if userId is valid
+    if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
+      set({ error: "Invalid user session. Please login first.", loading: false });
+      return;
+    }
+
     set({ loading: true, error: null });
     try {
-      const { data } = await cartApi.updateItem(get().userId, productId, request);
+      const { data } = await cartApi.updateItem(state.userId, productId, request);
       set({ cart: data, loading: false });
     } catch (error: unknown) {
       set({ error: "Failed to update item", loading: false });
@@ -79,9 +95,16 @@ export const useCartStore = create<CartStore>((set, get) => ({
   },
 
   removeItem: async (productId: number) => {
+    const state = get();
+    // Check if userId is valid
+    if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
+      set({ error: "Invalid user session. Please login first.", loading: false });
+      return;
+    }
+
     set({ loading: true, error: null });
     try {
-      const { data } = await cartApi.removeItem(get().userId, productId);
+      const { data } = await cartApi.removeItem(state.userId, productId);
       set({ cart: data, loading: false });
     } catch (error: unknown) {
       set({ error: "Failed to remove item", loading: false });
@@ -90,9 +113,16 @@ export const useCartStore = create<CartStore>((set, get) => ({
   },
 
   applyCoupon: async (code: string) => {
+    const state = get();
+    // Check if userId is valid
+    if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
+      set({ error: "Invalid user session. Please login first.", loading: false });
+      return;
+    }
+
     set({ loading: true, error: null });
     try {
-      const { data } = await cartApi.applyCoupon(get().userId, { couponCode: code });
+      const { data } = await cartApi.applyCoupon(state.userId, { couponCode: code });
       set({ cart: data, loading: false });
     } catch (error: unknown) {
       set({ error: "Failed to apply coupon", loading: false });
@@ -101,9 +131,16 @@ export const useCartStore = create<CartStore>((set, get) => ({
   },
 
   removeCoupon: async (couponCode: string) => {
+    const state = get();
+    // Check if userId is valid
+    if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
+      set({ error: "Invalid user session. Please login first.", loading: false });
+      return;
+    }
+
     set({ loading: true, error: null });
     try {
-      const { data } = await cartApi.removeCoupon(get().userId, couponCode);
+      const { data } = await cartApi.removeCoupon(state.userId, couponCode);
       set({ cart: data, loading: false });
     } catch (error: unknown) {
       set({ error: "Failed to remove coupon", loading: false });
@@ -112,9 +149,16 @@ export const useCartStore = create<CartStore>((set, get) => ({
   },
 
   clearCart: async () => {
+    const state = get();
+    // Check if userId is valid
+    if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
+      set({ error: "Invalid user session. Please login first.", loading: false });
+      return;
+    }
+
     set({ loading: true, error: null });
     try {
-      const { data } = await cartApi.clearCart(get().userId);
+      const { data } = await cartApi.clearCart(state.userId);
       set({ cart: data, loading: false });
     } catch (error: unknown) {
       set({ error: "Failed to clear cart", loading: false });

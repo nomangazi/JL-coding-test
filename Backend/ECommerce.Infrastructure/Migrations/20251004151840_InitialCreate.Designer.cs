@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251003134504_InitialCreate")]
+    [Migration("20251004151840_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -187,7 +187,7 @@ namespace ECommerce.Infrastructure.Migrations
                             Id = 1,
                             ApplicableProductIdsJson = "",
                             Code = "WELCOME50",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(1877),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(1198),
                             CurrentTotalUses = 0,
                             Description = "Welcome bonus - $50 off your first order over $200",
                             DiscountType = 1,
@@ -198,14 +198,14 @@ namespace ECommerce.Infrastructure.Migrations
                             MaxUsesPerUser = 1,
                             MinimumTotalPrice = 200m,
                             StartDate = new DateTime(2024, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(1878)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(1199)
                         },
                         new
                         {
                             Id = 2,
                             ApplicableProductIdsJson = "",
                             Code = "AUTO15",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4089),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(4165),
                             CurrentTotalUses = 0,
                             Description = "Automatic 15% off on orders over $100",
                             DiscountType = 2,
@@ -216,14 +216,14 @@ namespace ECommerce.Infrastructure.Migrations
                             MaxDiscountAmount = 75m,
                             MinimumTotalPrice = 100m,
                             StartDate = new DateTime(2024, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4090)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(4166)
                         },
                         new
                         {
                             Id = 3,
                             ApplicableProductIdsJson = "[1,2,3,6,7,8]",
                             Code = "TECH25",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4227),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(4575),
                             CurrentTotalUses = 0,
                             Description = "25% off on all electronics - limited time!",
                             DiscountType = 2,
@@ -236,14 +236,14 @@ namespace ECommerce.Infrastructure.Migrations
                             MaxUsesPerUser = 2,
                             MinimumTotalPrice = 50m,
                             StartDate = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4228)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(4575)
                         },
                         new
                         {
                             Id = 4,
                             ApplicableProductIdsJson = "",
                             Code = "FREESHIP",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4232),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(4581),
                             CurrentTotalUses = 0,
                             Description = "Free shipping - $15 off on orders over $75",
                             DiscountType = 1,
@@ -254,14 +254,14 @@ namespace ECommerce.Infrastructure.Migrations
                             MaxUsesPerUser = 5,
                             MinimumTotalPrice = 75m,
                             StartDate = new DateTime(2024, 9, 25, 0, 0, 0, 0, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4232)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(4581)
                         },
                         new
                         {
                             Id = 5,
                             ApplicableProductIdsJson = "",
                             Code = "BULK30",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4234),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(4584),
                             CurrentTotalUses = 0,
                             Description = "30% off when you buy 3 or more items",
                             DiscountType = 2,
@@ -274,7 +274,7 @@ namespace ECommerce.Infrastructure.Migrations
                             MaxUsesPerUser = 1,
                             MinimumCartItems = 3,
                             StartDate = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 726, DateTimeKind.Utc).AddTicks(4235)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 651, DateTimeKind.Utc).AddTicks(4584)
                         });
                 });
 
@@ -362,7 +362,7 @@ namespace ECommerce.Infrastructure.Migrations
                         {
                             Id = 1,
                             Category = "Electronics",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7632),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(6829),
                             Description = "High-performance laptop for professionals",
                             ImageUrl = "",
                             IsActive = true,
@@ -370,13 +370,13 @@ namespace ECommerce.Infrastructure.Migrations
                             Price = 1000m,
                             PriceOffice = 0m,
                             Stock = 15,
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7782)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(6992)
                         },
                         new
                         {
                             Id = 2,
                             Category = "Electronics",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7922),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7109),
                             Description = "Ergonomic wireless mouse with long battery life",
                             ImageUrl = "",
                             IsActive = true,
@@ -384,13 +384,13 @@ namespace ECommerce.Infrastructure.Migrations
                             Price = 25m,
                             PriceOffice = 0m,
                             Stock = 50,
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7922)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7110)
                         },
                         new
                         {
                             Id = 3,
                             Category = "Electronics",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7924),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7112),
                             Description = "RGB mechanical keyboard with tactile switches",
                             ImageUrl = "",
                             IsActive = true,
@@ -398,13 +398,13 @@ namespace ECommerce.Infrastructure.Migrations
                             Price = 75m,
                             PriceOffice = 0m,
                             Stock = 25,
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7925)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7112)
                         },
                         new
                         {
                             Id = 4,
                             Category = "Accessories",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7927),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7114),
                             Description = "Fast charging USB-C cable 6 feet long",
                             ImageUrl = "",
                             IsActive = true,
@@ -412,13 +412,13 @@ namespace ECommerce.Infrastructure.Migrations
                             Price = 15m,
                             PriceOffice = 0m,
                             Stock = 100,
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7927)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7114)
                         },
                         new
                         {
                             Id = 5,
                             Category = "Accessories",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7929),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7116),
                             Description = "Adjustable aluminum laptop stand for better ergonomics",
                             ImageUrl = "",
                             IsActive = true,
@@ -426,13 +426,13 @@ namespace ECommerce.Infrastructure.Migrations
                             Price = 45m,
                             PriceOffice = 0m,
                             Stock = 30,
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7929)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7116)
                         },
                         new
                         {
                             Id = 6,
                             Category = "Electronics",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7931),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7118),
                             Description = "27-inch 4K gaming monitor with 144Hz refresh rate",
                             ImageUrl = "",
                             IsActive = true,
@@ -440,13 +440,13 @@ namespace ECommerce.Infrastructure.Migrations
                             Price = 350m,
                             PriceOffice = 0m,
                             Stock = 12,
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7931)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7119)
                         },
                         new
                         {
                             Id = 7,
                             Category = "Electronics",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7933),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7120),
                             Description = "Latest flagship smartphone with 5G connectivity",
                             ImageUrl = "",
                             IsActive = true,
@@ -454,13 +454,13 @@ namespace ECommerce.Infrastructure.Migrations
                             Price = 800m,
                             PriceOffice = 0m,
                             Stock = 20,
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7933)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7121)
                         },
                         new
                         {
                             Id = 8,
                             Category = "Electronics",
-                            CreatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7935),
+                            CreatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7123),
                             Description = "Premium noise-cancelling wireless headphones",
                             ImageUrl = "",
                             IsActive = true,
@@ -468,7 +468,7 @@ namespace ECommerce.Infrastructure.Migrations
                             Price = 150m,
                             PriceOffice = 0m,
                             Stock = 35,
-                            UpdatedAt = new DateTime(2025, 10, 3, 13, 45, 3, 725, DateTimeKind.Utc).AddTicks(7935)
+                            UpdatedAt = new DateTime(2025, 10, 4, 15, 18, 39, 650, DateTimeKind.Utc).AddTicks(7123)
                         });
                 });
 

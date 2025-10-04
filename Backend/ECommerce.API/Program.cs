@@ -4,15 +4,27 @@ using ECommerce.Core.Entities;
 using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using ECommerce.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // PostgreSQL connection
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), npgsqlOptions =>
+    {
+        npgsqlOptions.CommandTimeout(60); // Set command timeout to 60 seconds
+        npgsqlOptions.EnableRetryOnFailure();
+    });
+});
 
-// Add controllers
-builder.Services.AddControllers();
+// Add controllers with JSON configuration to handle circular references
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -40,9 +52,9 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 
 // Dependency Injection - Services
-builder.Services.AddScoped<IUserService, ECommerce.API.Services.UserService>();
-builder.Services.AddScoped<ICartService, ECommerce.API.Services.CartService>();
-builder.Services.AddScoped<ICouponService, ECommerce.API.Services.CouponService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 
 var app = builder.Build();
 
@@ -62,7 +74,17 @@ app.UseCors("AllowFrontend");
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate(); // Applies all pending migrations
+
+    // Check if DB exists first
+    if (dbContext.Database.EnsureCreated())// Returns true if new DB was created
+    {
+        dbContext.Database.Migrate(); // Applies all pending migrations
+    }
+    else
+    {
+        dbContext.Database.Migrate(); // Applies all pending migrations
+    }
+
 
     // Seed users if none exist
     if (!dbContext.Users.Any())

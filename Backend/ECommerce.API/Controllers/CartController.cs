@@ -35,7 +35,7 @@ namespace ECommerce.API.Controllers
 
         // POST: api/cart/{userId}/items
         [HttpPost("{userId}/items")]
-        public async Task<ActionResult<CartResponse>> AddItemToCart(int userId, [FromBody] AddCartItemRequest request)
+        public async Task<ActionResult<CartResponse>> AddItemToCart([FromRoute] int userId, [FromBody] AddCartItemRequest request)
         {
             try
             {
@@ -48,7 +48,6 @@ namespace ECommerce.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error adding item to cart for user {UserId}", userId);
                 return StatusCode(500, new { message = ex.Message });
             }
         }

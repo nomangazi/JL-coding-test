@@ -1,35 +1,41 @@
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.Core.Services;
 
 namespace ECommerce.API.Services
 {
-    public class CartService : Core.Services.ICartService
+    public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
         private readonly IProductRepository _productRepository;
         private readonly ICouponRepository _couponRepository;
-        private readonly Core.Services.ICouponService _couponService;
+        private readonly IUserRepository _userRepository;
+        private readonly ICouponService _couponService;
 
         public CartService(
             ICartRepository cartRepository,
             IProductRepository productRepository,
             ICouponRepository couponRepository,
-            Core.Services.ICouponService couponService)
+            IUserRepository userRepository,
+            ICouponService couponService)
         {
             _cartRepository = cartRepository;
             _productRepository = productRepository;
             _couponRepository = couponRepository;
+            _userRepository = userRepository;
             _couponService = couponService;
         }
 
         public async Task<CartResponse> GetCartAsync(int userId)
         {
-            var cart = await _cartRepository.GetCartByUserIdAsync(userId);
+            // Validate that the user exists before creating or retrieving cart
+            var user = await _userRepository.GetByIdAsync(userId) ?? throw new ArgumentException($"User with ID {userId} does not exist.");
+            var cart = await _cartRepository.GetCartByUserIdAsync(user.Id);
 
             if (cart == null)
             {
-                cart = await _cartRepository.CreateCartAsync(userId);
+                cart = await _cartRepository.CreateCartAsync(user.Id);
             }
 
             // Apply auto-applied coupons
@@ -42,28 +48,27 @@ namespace ECommerce.API.Services
 
         public async Task<CartResponse> AddItemToCartAsync(int userId, AddCartItemRequest request)
         {
+
             if (request.Quantity <= 0)
             {
                 throw new ArgumentException("Quantity must be greater than 0");
             }
 
+            // Validate that the user exists before creating cart
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new ArgumentException($"User with ID {userId} does not exist.");
+            }
             var cart = await _cartRepository.GetCartByUserIdAsync(userId);
-            if (cart == null)
-            {
-                cart = await _cartRepository.CreateCartAsync(userId);
-            }
 
-            var product = await _productRepository.GetByIdAsync(request.ProductId);
-            if (product == null)
-            {
-                throw new Exception("Product not found");
-            }
+            cart ??= await _cartRepository.CreateCartAsync(userId);
 
+            var product = await _productRepository.GetByIdAsync(request.ProductId) ?? throw new Exception("Product not found");
             if (!product.IsActive)
             {
                 throw new Exception("Product is not available");
             }
-
             if (product.Stock < request.Quantity)
             {
                 throw new Exception("Insufficient stock");
@@ -71,7 +76,6 @@ namespace ECommerce.API.Services
 
             // Check if item already exists in cart
             var existingItem = await _cartRepository.GetCartItemAsync(cart.Id, request.ProductId);
-
             if (existingItem != null)
             {
                 existingItem.Quantity += request.Quantity;
@@ -89,12 +93,16 @@ namespace ECommerce.API.Services
                     Product = product
                 };
                 await _cartRepository.AddCartItemAsync(cartItem);
+
             }
 
+            // Update cart's UpdatedAt
+            cart.UpdatedAt = DateTime.UtcNow;
             await _cartRepository.UpdateCartAsync(cart);
 
             // Revalidate and apply auto-coupons after cart changes
             await ApplyAutoAppliedCouponsInternalAsync(cart);
+            await RevalidateAppliedCouponsAsync(cart);
 
             var priceCalculation = CalculatePricing(cart);
             return MapToCartResponse(cart, priceCalculation);
@@ -177,7 +185,7 @@ namespace ECommerce.API.Services
             }
 
             // Check if coupon is already applied
-            if (cart.AppliedCoupons.Any(ac => ac.Coupon.Code == couponCode))
+            if (cart.AppliedCoupons.Any(ac => ac.Coupon!.Code == couponCode))
             {
                 throw new Exception("Coupon is already applied");
             }
@@ -269,7 +277,7 @@ namespace ECommerce.API.Services
             foreach (var appliedCoupon in cart.AppliedCoupons)
             {
                 var discount = _couponService.CalculateDiscount(
-                    appliedCoupon.Coupon,
+                    appliedCoupon.Coupon!,
                     totalBeforeDiscount,
                     cart.Items.ToList());
 
@@ -277,7 +285,7 @@ namespace ECommerce.API.Services
                 {
                     discountDetails.Add(new AppliedDiscountDetail
                     {
-                        CouponCode = appliedCoupon.Coupon.Code,
+                        CouponCode = appliedCoupon.Coupon!.Code,
                         DiscountAmount = discount,
                         DiscountType = appliedCoupon.Coupon.DiscountType
                     });
@@ -300,7 +308,6 @@ namespace ECommerce.API.Services
         private async Task ApplyAutoAppliedCouponsInternalAsync(Cart cart)
         {
             var autoAppliedCoupons = await _couponService.GetAutoAppliedCouponsAsync(cart.UserId, cart);
-
             foreach (var coupon in autoAppliedCoupons)
             {
                 // Check if already applied
@@ -308,7 +315,6 @@ namespace ECommerce.API.Services
                 {
                     continue;
                 }
-
                 // Validate the coupon
                 var validationResult = await _couponService.ValidateCouponAsync(coupon.Code, cart.UserId, cart);
                 if (validationResult.IsValid)
@@ -333,7 +339,7 @@ namespace ECommerce.API.Services
             foreach (var appliedCoupon in cart.AppliedCoupons.ToList())
             {
                 var validationResult = await _couponService.ValidateCouponAsync(
-                    appliedCoupon.Coupon.Code,
+                    appliedCoupon.Coupon!.Code,
                     cart.UserId,
                     cart);
 
@@ -368,7 +374,7 @@ namespace ECommerce.API.Services
                 AppliedCoupons = cart.AppliedCoupons.Select(ac => new AppliedCouponDto
                 {
                     Id = ac.Id,
-                    Code = ac.Coupon.Code,
+                    Code = ac.Coupon!.Code,
                     Description = ac.Coupon.Description,
                     IsAutoApplied = ac.Coupon.IsAutoApplied,
                     AppliedAt = ac.AppliedAt,

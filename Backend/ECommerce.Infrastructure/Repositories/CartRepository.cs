@@ -16,12 +16,25 @@ namespace ECommerce.Infrastructure.Repositories
 
         public async Task<Cart?> GetCartByUserIdAsync(int userId)
         {
-            return await _context.Carts
-                .Include(c => c.Items)
-                    .ThenInclude(i => i.Product)
-                .Include(c => c.AppliedCoupons)
-                    .ThenInclude(ac => ac.Coupon)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+            var cartData = await _context.Carts
+            .Include(c => c.Items)
+                .ThenInclude(i => i.Product)
+            .Include(c => c.AppliedCoupons)
+                .ThenInclude(ac => ac.Coupon)
+            .AsSplitQuery() // Use split query to avoid cartesian explosion
+            .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            // System.Console.WriteLine("1++++++++++++++++++++++++++++++");
+            // System.Console.WriteLine($"User ID: {userId}");
+            // System.Console.WriteLine(JsonSerializer.Serialize(cartData, new JsonSerializerOptions
+            // {
+            //     ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            //     WriteIndented = true
+            // }));
+            // System.Console.WriteLine("2++++++++++++++++++++++++++++++");
+
+            return cartData;
+
         }
 
         public async Task<Cart?> GetCartByIdAsync(int cartId)
@@ -31,6 +44,7 @@ namespace ECommerce.Infrastructure.Repositories
                     .ThenInclude(i => i.Product)
                 .Include(c => c.AppliedCoupons)
                     .ThenInclude(ac => ac.Coupon)
+                .AsSplitQuery() // Use split query to avoid cartesian explosion
                 .FirstOrDefaultAsync(c => c.Id == cartId);
         }
 
@@ -45,6 +59,7 @@ namespace ECommerce.Infrastructure.Repositories
 
             _context.Carts.Add(cart);
             await _context.SaveChangesAsync();
+
             return cart;
         }
 
@@ -97,16 +112,28 @@ namespace ECommerce.Infrastructure.Repositories
 
         public async Task<AppliedCoupon> AddAppliedCouponAsync(AppliedCoupon appliedCoupon)
         {
-            _context.AppliedCoupons.Add(appliedCoupon);
-            await _context.SaveChangesAsync();
-            return appliedCoupon;
+            try
+            {
+                Console.WriteLine($"18++++++++++++++++ Before Adding {appliedCoupon.CouponId}" + appliedCoupon.CouponId);
+                _context.AppliedCoupons.Add(appliedCoupon);
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"19++++++++++++++++ After Adding {appliedCoupon.CouponId}" + appliedCoupon.CouponId);
+                return appliedCoupon;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"20+++++++++++++++++++++++: {ex.Message}");
+                Console.WriteLine($"21+++++++++++++++++++++++: {ex.InnerException}");
+                Console.WriteLine($"22+++++++++++++++++++++++: {ex.StackTrace}");
+                throw;
+            }
         }
 
         public async Task RemoveAppliedCouponAsync(int cartId, string couponCode)
         {
             var appliedCoupon = await _context.AppliedCoupons
                 .Include(ac => ac.Coupon)
-                .FirstOrDefaultAsync(ac => ac.CartId == cartId && ac.Coupon.Code == couponCode);
+                .FirstOrDefaultAsync(ac => ac.CartId == cartId && ac.Coupon!.Code == couponCode);
 
             if (appliedCoupon != null)
             {
