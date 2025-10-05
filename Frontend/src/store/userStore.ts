@@ -24,6 +24,10 @@ export const useUserStore = create<UserStore>()(
         const user = get().user;
         if (user) {
           set({ isAuthenticated: true });
+          // Initialize cart store with user ID when restoring session
+          import("./cartStore").then(({ useCartStore }) => {
+            useCartStore.getState().setUserId(user.id.toString());
+          });
         }
       },
 
