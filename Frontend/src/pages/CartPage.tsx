@@ -3,17 +3,22 @@ import { toast } from "react-toastify";
 import { useCartStore } from "../store/cartStore";
 import { formatCurrency } from "../lib/utils";
 import { Button } from "../components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { Skeleton } from "../components/ui/skeleton";
+import { ShoppingCart, Loader2 } from "lucide-react";
 
 export function CartPage() {
   const { cart, loading: cartLoading, fetchCart, updateItem, removeItem, applyCoupon, removeCoupon } = useCartStore();
   const [couponCode, setCouponCode] = useState("");
+  const [updatingItems, setUpdatingItems] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
 
   const handleUpdateQuantity = async (productId: number, quantity: number) => {
+    // Add item to updating set
+    setUpdatingItems((prev) => new Set(prev).add(productId));
+
     try {
       if (quantity === 0) {
         await removeItem(productId);
@@ -24,6 +29,13 @@ export function CartPage() {
       }
     } catch {
       toast.error("Failed to update quantity");
+    } finally {
+      // Remove item from updating set
+      setUpdatingItems((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
     }
   };
 
@@ -62,14 +74,39 @@ export function CartPage() {
         Shopping Cart
       </h2>
 
-      {cartLoading && (
-        <div className="text-center py-8 bg-white rounded-lg shadow">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-          <p className="mt-2 text-gray-600">Loading cart...</p>
+      {cartLoading && !cart && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Cart Items Skeleton */}
+          <div className="lg:col-span-2 space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex-1 space-y-3">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/4" />
+                    <Skeleton className="h-10 w-48" />
+                  </div>
+                  <Skeleton className="h-8 w-24" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Order Summary Skeleton */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow p-6">
+              <Skeleton className="h-7 w-40 mb-4" />
+              <div className="space-y-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-32 w-full" />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
-      {!cartLoading && cart && (
+      {cart && (
         <>
           {cart.items.length === 0 ? (
             <div className="bg-white rounded-lg shadow p-12 text-center">
@@ -81,42 +118,51 @@ export function CartPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Cart Items */}
               <div className="lg:col-span-2 space-y-4">
-                {cart.items.map((item) => (
-                  <div key={item.id} className="bg-white rounded-lg shadow p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold mb-1">{item.productName}</h3>
-                        <p className="text-gray-600 mb-3">{formatCurrency(item.price)} each</p>
+                {cart.items.map((item) => {
+                  const isUpdating = updatingItems.has(item.productId);
+                  return (
+                    <div key={item.id} className={`bg-white rounded-lg shadow p-6 transition-opacity ${isUpdating ? "opacity-60 pointer-events-none" : "opacity-100"}`}>
+                      <div className="flex items-start gap-4">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
+                            {item.productName}
+                            {isUpdating && <Loader2 className="w-4 h-4 animate-spin text-blue-600" />}
+                          </h3>
+                          <p className="text-gray-600 mb-3">{formatCurrency(item.price)} each</p>
 
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-2 border rounded-lg">
-                            <Button onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)} size="sm" variant="ghost" className="h-10 w-10">
-                              -
-                            </Button>
-                            <span className="px-4 font-medium">{item.quantity}</span>
-                            <Button onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)} size="sm" variant="ghost" className="h-10 w-10">
-                              +
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 border rounded-lg">
+                              <Button onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)} size="sm" variant="ghost" className="h-10 w-10" disabled={isUpdating}>
+                                -
+                              </Button>
+                              <span className="px-4 font-medium min-w-[2rem] text-center">{item.quantity}</span>
+                              <Button onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)} size="sm" variant="ghost" className="h-10 w-10" disabled={isUpdating}>
+                                +
+                              </Button>
+                            </div>
+
+                            <Button onClick={() => handleUpdateQuantity(item.productId, 0)} size="sm" variant="destructive" disabled={isUpdating}>
+                              Remove
                             </Button>
                           </div>
+                        </div>
 
-                          <Button onClick={() => removeItem(item.productId)} size="sm" variant="destructive">
-                            Remove
-                          </Button>
+                        <div className="text-right">
+                          <p className="text-xl font-bold text-gray-900">{formatCurrency(item.subtotal)}</p>
                         </div>
                       </div>
-
-                      <div className="text-right">
-                        <p className="text-xl font-bold text-gray-900">{formatCurrency(item.subtotal)}</p>
-                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Order Summary */}
               <div className="lg:col-span-1">
-                <div className="bg-white rounded-lg shadow p-6 sticky top-8">
-                  <h3 className="text-xl font-bold mb-4">Order Summary</h3>
+                <div className={`bg-white rounded-lg shadow p-6 sticky top-8 transition-opacity ${cartLoading ? "opacity-60" : "opacity-100"}`}>
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    Order Summary
+                    {cartLoading && <Loader2 className="w-5 h-5 animate-spin text-blue-600" />}
+                  </h3>
 
                   {/* Coupon Input */}
                   <div className="mb-6">

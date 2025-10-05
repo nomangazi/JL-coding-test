@@ -90,17 +90,18 @@ export const useCartStore = create<CartStore>((set, get) => ({
     // Check if userId is valid
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
       const errorMsg = "Invalid user session. Please login first.";
-      set({ error: errorMsg, loading: false });
+      set({ error: errorMsg });
       toast.error(errorMsg);
       return;
     }
 
-    set({ loading: true, error: null });
+    // Don't set global loading to prevent full page reload appearance
+    set({ error: null });
     try {
       const { data } = await cartApi.updateItem(state.userId, productId, request);
-      set({ cart: data, loading: false });
+      set({ cart: data });
     } catch (error: unknown) {
-      set({ error: "Failed to update item", loading: false });
+      set({ error: "Failed to update item" });
       throw error;
     }
   },
@@ -110,17 +111,18 @@ export const useCartStore = create<CartStore>((set, get) => ({
     // Check if userId is valid
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
       const errorMsg = "Invalid user session. Please login first.";
-      set({ error: errorMsg, loading: false });
+      set({ error: errorMsg });
       toast.error(errorMsg);
       return;
     }
 
-    set({ loading: true, error: null });
+    // Don't set global loading to prevent full page reload appearance
+    set({ error: null });
     try {
       const { data } = await cartApi.removeItem(state.userId, productId);
-      set({ cart: data, loading: false });
+      set({ cart: data });
     } catch (error: unknown) {
-      set({ error: "Failed to remove item", loading: false });
+      set({ error: "Failed to remove item" });
       throw error;
     }
   },
@@ -130,11 +132,12 @@ export const useCartStore = create<CartStore>((set, get) => ({
     // Check if userId is valid
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
       const errorMsg = "Invalid user session. Please login first.";
-      set({ error: errorMsg, loading: false });
+      set({ error: errorMsg });
       toast.error(errorMsg);
       return;
     }
 
+    // Keep loading state for coupon operations as they affect the entire cart
     set({ loading: true, error: null });
     try {
       const { data } = await cartApi.applyCoupon(state.userId, { couponCode: code });
@@ -150,11 +153,12 @@ export const useCartStore = create<CartStore>((set, get) => ({
     // Check if userId is valid
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
       const errorMsg = "Invalid user session. Please login first.";
-      set({ error: errorMsg, loading: false });
+      set({ error: errorMsg });
       toast.error(errorMsg);
       return;
     }
 
+    // Keep loading state for coupon operations as they affect the entire cart
     set({ loading: true, error: null });
     try {
       const { data } = await cartApi.removeCoupon(state.userId, couponCode);
