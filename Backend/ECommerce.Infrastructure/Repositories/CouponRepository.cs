@@ -16,9 +16,6 @@ namespace ECommerce.Infrastructure.Repositories
 
         public async Task<Coupon?> GetCouponByCodeAsync(string code)
         {
-            System.Console.WriteLine("++++++++++++++++++");
-            System.Console.WriteLine(code);
-            System.Console.WriteLine("++++++++++++++++++");
             return await _context.Coupons
                 .FirstOrDefaultAsync(c => c.Code.ToUpper() == code.ToUpper() && c.DeletedAt == null);
         }
@@ -51,6 +48,14 @@ namespace ECommerce.Infrastructure.Repositories
 
         public async Task<Coupon> AddCouponAsync(Coupon coupon)
         {
+            // Check if code already exists
+            // Check if code already exists (case-insensitive)
+            bool exists = await _context.Coupons
+                .AnyAsync(c => c.Code.ToUpper() == coupon.Code.ToUpper() && c.DeletedAt == null);
+            if (exists)
+            {
+                throw new Exception("Coupon code already exists");
+            }
             _context.Coupons.Add(coupon);
             await _context.SaveChangesAsync();
             return coupon;
@@ -59,7 +64,7 @@ namespace ECommerce.Infrastructure.Repositories
         public async Task UpdateCouponAsync(Coupon coupon)
         {
             coupon.UpdatedAt = DateTime.UtcNow;
-            _context.Coupons.Update(coupon);
+            _context.Entry(coupon).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
@@ -90,12 +95,18 @@ namespace ECommerce.Infrastructure.Repositories
         {
             return await _context.CouponUsages
                 .Include(cu => cu.Coupon)
-                .Where(cu => cu.Coupon.Code == couponCode && cu.UserId == userId)
+                .Where(cu => cu.Coupon!.Code == couponCode && cu.UserId == userId)
                 .CountAsync();
         }
 
         public async Task<CouponUsage> AddCouponUsageAsync(CouponUsage usage)
-        {
+        {// Check if user already used this coupon
+            bool alreadyUsed = await _context.CouponUsages
+                .AnyAsync(cu => cu.CouponId == usage.CouponId && cu.UserId == usage.UserId);
+
+            if (alreadyUsed)
+                throw new Exception("User has already used this coupon");
+
             _context.CouponUsages.Add(usage);
             await _context.SaveChangesAsync();
             return usage;

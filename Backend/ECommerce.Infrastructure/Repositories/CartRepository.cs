@@ -24,15 +24,6 @@ namespace ECommerce.Infrastructure.Repositories
             .AsSplitQuery() // Use split query to avoid cartesian explosion
             .FirstOrDefaultAsync(c => c.UserId == userId);
 
-            // System.Console.WriteLine("1++++++++++++++++++++++++++++++");
-            // System.Console.WriteLine($"User ID: {userId}");
-            // System.Console.WriteLine(JsonSerializer.Serialize(cartData, new JsonSerializerOptions
-            // {
-            //     ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            //     WriteIndented = true
-            // }));
-            // System.Console.WriteLine("2++++++++++++++++++++++++++++++");
-
             return cartData;
 
         }
@@ -112,21 +103,10 @@ namespace ECommerce.Infrastructure.Repositories
 
         public async Task<AppliedCoupon> AddAppliedCouponAsync(AppliedCoupon appliedCoupon)
         {
-            try
-            {
-                Console.WriteLine($"18++++++++++++++++ Before Adding {appliedCoupon.CouponId}" + appliedCoupon.CouponId);
-                _context.AppliedCoupons.Add(appliedCoupon);
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"19++++++++++++++++ After Adding {appliedCoupon.CouponId}" + appliedCoupon.CouponId);
-                return appliedCoupon;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"20+++++++++++++++++++++++: {ex.Message}");
-                Console.WriteLine($"21+++++++++++++++++++++++: {ex.InnerException}");
-                Console.WriteLine($"22+++++++++++++++++++++++: {ex.StackTrace}");
-                throw;
-            }
+            _context.AppliedCoupons.Add(appliedCoupon);
+            await _context.SaveChangesAsync();
+            return appliedCoupon;
+
         }
 
         public async Task RemoveAppliedCouponAsync(int cartId, string couponCode)

@@ -2,6 +2,8 @@ using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using ECommerce.Core.Services;
+using ECommerce.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API.Services
 {
@@ -13,13 +15,17 @@ namespace ECommerce.API.Services
         private readonly IUserRepository _userRepository;
         private readonly ICouponService _couponService;
 
+        private readonly AppDbContext _context; // Assuming you have access to the DbContext
+
         public CartService(
+            AppDbContext context,
             ICartRepository cartRepository,
             IProductRepository productRepository,
             ICouponRepository couponRepository,
             IUserRepository userRepository,
             ICouponService couponService)
         {
+            _context = context;
             _cartRepository = cartRepository;
             _productRepository = productRepository;
             _couponRepository = couponRepository;
@@ -184,8 +190,15 @@ namespace ECommerce.API.Services
                 throw new Exception("Cart not found");
             }
 
-            // Check if coupon is already applied
-            if (cart.AppliedCoupons.Any(ac => ac.Coupon!.Code == couponCode))
+            // Ensure AppliedCoupons are loaded with Coupon
+            await _context.Entry(cart)
+                .Collection(c => c.AppliedCoupons)
+                .Query()
+                .Include(ac => ac.Coupon)
+                .LoadAsync();
+
+            // Check if coupon already applied
+            if (cart.AppliedCoupons.Any(ac => ac.Coupon != null && ac.Coupon.Code == couponCode))
             {
                 throw new Exception("Coupon is already applied");
             }
@@ -208,7 +221,6 @@ namespace ECommerce.API.Services
             {
                 CartId = cart.Id,
                 CouponId = coupon.Id,
-                Coupon = coupon,
                 AppliedAt = DateTime.UtcNow
             };
 
@@ -222,7 +234,6 @@ namespace ECommerce.API.Services
                 UsedAt = DateTime.UtcNow
             };
             await _couponRepository.AddCouponUsageAsync(usage);
-
             // Update coupon usage count
             coupon.CurrentTotalUses++;
             await _couponRepository.UpdateCouponAsync(coupon);
@@ -323,7 +334,7 @@ namespace ECommerce.API.Services
                     {
                         CartId = cart.Id,
                         CouponId = coupon.Id,
-                        Coupon = coupon,
+                        // Don't set Coupon navigation property to avoid EF tracking issues
                         AppliedAt = DateTime.UtcNow
                     };
 
