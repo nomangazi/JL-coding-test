@@ -99,7 +99,7 @@ namespace ECommerce.API.Controllers
             {
                 // validate request
                 request.Validate();
-                var cart = await _cartService.ApplyCouponAsync(userId, request.Code);
+                var cart = await _cartService.ApplyCouponAsync(userId, request.CouponCode);
                 return Ok(cart);
             }
             catch (Exception ex)

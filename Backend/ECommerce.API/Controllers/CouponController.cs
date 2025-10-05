@@ -126,7 +126,7 @@ namespace ECommerce.API.Controllers
 
         // POST: api/coupon/validate
         [HttpPost("validate")]
-        public async Task<ActionResult<CouponValidationResult>> ValidateCoupon([FromBody] ApplyCouponRequest request)
+        public async Task<ActionResult<CouponValidationResult>> ValidateCoupon([FromBody] CouponValidationRequest request)
         {
             try
             {
