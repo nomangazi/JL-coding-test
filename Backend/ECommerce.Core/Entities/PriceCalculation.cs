@@ -5,7 +5,7 @@ namespace ECommerce.Core.Entities
         public decimal TotalBeforeDiscount { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal FinalPayableAmount { get; set; }
-        public List<AppliedDiscountDetail> DiscountDetails { get; set; } = new();
+        public List<AppliedDiscountDetail>? DiscountDetails { get; set; }
     }
     public class AppliedDiscountDetail
     {
