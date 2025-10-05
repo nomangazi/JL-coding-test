@@ -8,6 +8,9 @@ export interface Product {
   description: string;
   price: number;
   stock: number;
+  category: string;
+  imageUrl: string;
+  isActive: boolean;
 }
 
 export interface CartItem {
