@@ -9,11 +9,11 @@ interface CartStore {
   error: string | null;
   userId: string;
   showAuthModal: boolean;
-  pendingCartAction: (() => Promise<void>) | null;
+  pendingCartAction: (() => Promise<boolean>) | null;
 
   setUserId: (userId: string) => void;
   fetchCart: () => Promise<void>;
-  addItem: (request: AddCartItemRequest, requireAuth?: boolean) => Promise<void>;
+  addItem: (request: AddCartItemRequest, requireAuth?: boolean) => Promise<boolean>;
   updateItem: (productId: number, request: UpdateCartItemRequest) => Promise<void>;
   removeItem: (productId: number) => Promise<void>;
   applyCoupon: (code: string) => Promise<void>;
@@ -63,7 +63,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
       // Store the pending action
       const pendingAction = () => get().addItem(request, false);
       set({ showAuthModal: true, pendingCartAction: pendingAction });
-      return;
+      return false; // Return false when auth is required
     }
 
     // Double-check userId validity before making API call
@@ -71,13 +71,14 @@ export const useCartStore = create<CartStore>((set, get) => ({
       const errorMsg = "Invalid user session. Please login first.";
       set({ error: errorMsg, loading: false });
       toast.error(errorMsg);
-      return;
+      return false; // Return false on error
     }
 
     set({ loading: true, error: null });
     try {
       const { data } = await cartApi.addItem(state.userId, request);
       set({ cart: data, loading: false });
+      return true; // Return true on success
     } catch (error: unknown) {
       set({ error: "Failed to add item", loading: false });
       throw error;
@@ -189,8 +190,11 @@ export const useCartStore = create<CartStore>((set, get) => ({
   executePendingAction: async () => {
     const { pendingCartAction } = get();
     if (pendingCartAction) {
-      await pendingCartAction();
+      const success = await pendingCartAction();
       set({ pendingCartAction: null });
+      if (success) {
+        toast.success("Item added to cart successfully!");
+      }
     }
   },
 

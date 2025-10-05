@@ -23,8 +23,10 @@ function App() {
 
   const handleAddToCart = async (product: Product) => {
     try {
-      await addItem({ productId: product.id, quantity: 1 });
-      toast.success(`Added ${product.name} to cart`);
+      const success = await addItem({ productId: product.id, quantity: 1 });
+      if (success) {
+        toast.success(`Added ${product.name} to cart`);
+      }
     } catch {
       toast.error("Failed to add item to cart");
     }
