@@ -108,7 +108,7 @@ export function CartPage() {
         </div>
       )}
 
-      {!cartLoading && !isAuthenticated && (
+      {!isAuthenticated && !cartLoading && (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <ShoppingCart className="w-16 h-16 mx-auto text-gray-300 mb-4" />
           <p className="text-gray-500 text-lg mb-4">Please login to view your cart</p>
@@ -116,7 +116,7 @@ export function CartPage() {
         </div>
       )}
 
-      {!cartLoading && isAuthenticated && cart && (
+      {isAuthenticated && cart && (
         <>
           {cart.items.length === 0 ? (
             <div className="bg-white rounded-lg shadow p-12 text-center">
