@@ -46,6 +46,8 @@ export const useUserStore = create<UserStore>()(
 
             // Update cart store with user ID
             useCartStore.getState().setUserId(user.id.toString());
+            // Fetch cart for the logged-in user
+            useCartStore.getState().fetchCart();
 
             toast.success(`Welcome back, ${user.name}!`);
             return true;
@@ -84,6 +86,8 @@ export const useUserStore = create<UserStore>()(
 
           // Update cart store with user ID
           useCartStore.getState().setUserId(newUser.id.toString());
+          // Fetch cart for the newly registered user
+          useCartStore.getState().fetchCart();
 
           toast.success(`Welcome, ${newUser.name}! Your account has been created.`);
           return true;
@@ -125,6 +129,8 @@ export const useUserStore = create<UserStore>()(
         // Clear cart store
         useCartStore.getState().setUserId("");
         useCartStore.getState().clearPendingAction();
+        // Clear cart data to update UI (cart icon, etc.)
+        useCartStore.getState().clearCartData();
 
         toast.info("You have been logged out successfully");
       },

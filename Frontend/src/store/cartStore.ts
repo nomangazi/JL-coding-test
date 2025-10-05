@@ -19,6 +19,7 @@ interface CartStore {
   applyCoupon: (code: string) => Promise<void>;
   removeCoupon: (couponCode: string) => Promise<void>;
   clearCart: () => Promise<void>;
+  clearCartData: () => void;
   setShowAuthModal: (show: boolean) => void;
   executePendingAction: () => Promise<void>;
   clearPendingAction: () => void;
@@ -190,6 +191,8 @@ export const useCartStore = create<CartStore>((set, get) => ({
       throw error;
     }
   },
+
+  clearCartData: () => set({ cart: null, loading: false, error: null }),
 
   setShowAuthModal: (show: boolean) => set({ showAuthModal: show }),
 
