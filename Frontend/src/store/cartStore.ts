@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { toast } from "react-toastify";
 import { cartApi } from "../lib/api";
 import type { CartResponse, AddCartItemRequest, UpdateCartItemRequest } from "../types";
 
@@ -45,7 +46,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
       const { data } = await cartApi.getCart(state.userId);
       set({ cart: data, loading: false });
     } catch {
-      set({ error: "Failed to fetch cart", loading: false });
+      const errorMsg = "Failed to fetch cart";
+      set({ error: errorMsg, loading: false });
+      toast.error(errorMsg);
     }
   },
 
@@ -53,7 +56,10 @@ export const useCartStore = create<CartStore>((set, get) => ({
     const state = get();
 
     // Check if user is authenticated when required or if userId is invalid
-    if (requireAuth && (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0)) {
+    if (
+      requireAuth &&
+      (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0)
+    ) {
       // Store the pending action
       const pendingAction = () => get().addItem(request, false);
       set({ showAuthModal: true, pendingCartAction: pendingAction });
@@ -62,7 +68,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
 
     // Double-check userId validity before making API call
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
-      set({ error: "Invalid user session. Please login first.", loading: false });
+      const errorMsg = "Invalid user session. Please login first.";
+      set({ error: errorMsg, loading: false });
+      toast.error(errorMsg);
       return;
     }
 
@@ -80,7 +88,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
     const state = get();
     // Check if userId is valid
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
-      set({ error: "Invalid user session. Please login first.", loading: false });
+      const errorMsg = "Invalid user session. Please login first.";
+      set({ error: errorMsg, loading: false });
+      toast.error(errorMsg);
       return;
     }
 
@@ -98,7 +108,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
     const state = get();
     // Check if userId is valid
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
-      set({ error: "Invalid user session. Please login first.", loading: false });
+      const errorMsg = "Invalid user session. Please login first.";
+      set({ error: errorMsg, loading: false });
+      toast.error(errorMsg);
       return;
     }
 
@@ -116,7 +128,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
     const state = get();
     // Check if userId is valid
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
-      set({ error: "Invalid user session. Please login first.", loading: false });
+      const errorMsg = "Invalid user session. Please login first.";
+      set({ error: errorMsg, loading: false });
+      toast.error(errorMsg);
       return;
     }
 
@@ -134,7 +148,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
     const state = get();
     // Check if userId is valid
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
-      set({ error: "Invalid user session. Please login first.", loading: false });
+      const errorMsg = "Invalid user session. Please login first.";
+      set({ error: errorMsg, loading: false });
+      toast.error(errorMsg);
       return;
     }
 
@@ -152,7 +168,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
     const state = get();
     // Check if userId is valid
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
-      set({ error: "Invalid user session. Please login first.", loading: false });
+      const errorMsg = "Invalid user session. Please login first.";
+      set({ error: errorMsg, loading: false });
+      toast.error(errorMsg);
       return;
     }
 

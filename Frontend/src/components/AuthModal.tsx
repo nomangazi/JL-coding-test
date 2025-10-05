@@ -22,7 +22,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   });
 
   const { login, register, isLoading, error, clearError } = useUserStore();
-  const { executePendingAction } = useCartStore();
+  const { executePendingAction, clearPendingAction } = useCartStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -78,6 +78,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     if (!open) {
       clearError();
       setFormData({ email: "", name: "", phone: "" });
+      // Clear any pending cart action if the user closes the modal without authenticating
+      clearPendingAction();
       onClose();
     }
   };

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import { useCartStore } from "./store/cartStore";
 import { useProductStore } from "./store/productStore";
 import { useUserStore } from "./store/userStore";
@@ -13,8 +14,6 @@ function App() {
 
   const { products, loading: productsLoading, fetchProducts } = useProductStore();
   const [couponCode, setCouponCode] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     initializeAuth();
@@ -25,11 +24,9 @@ function App() {
   const handleAddToCart = async (product: Product) => {
     try {
       await addItem({ productId: product.id, quantity: 1 });
-      setSuccess(`Added ${product.name} to cart`);
-      setTimeout(() => setSuccess(""), 3000);
+      toast.success(`Added ${product.name} to cart`);
     } catch {
-      setError("Failed to add item");
-      setTimeout(() => setError(""), 3000);
+      toast.error("Failed to add item to cart");
     }
   };
 
@@ -37,12 +34,13 @@ function App() {
     try {
       if (quantity === 0) {
         await removeItem(productId);
+        toast.success("Item removed from cart");
       } else {
         await updateItem(productId, { quantity });
+        toast.success("Quantity updated");
       }
     } catch {
-      setError("Failed to update quantity");
-      setTimeout(() => setError(""), 3000);
+      toast.error("Failed to update quantity");
     }
   };
 
@@ -52,21 +50,25 @@ function App() {
 
     try {
       await applyCoupon(couponCode.toUpperCase());
-      setSuccess(`Coupon ${couponCode} applied!`);
+      toast.success(`Coupon ${couponCode} applied successfully!`);
       setCouponCode("");
-      setTimeout(() => setSuccess(""), 3000);
-    } catch {
-      setError("Failed to apply coupon");
-      setTimeout(() => setError(""), 3000);
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === "object" && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
+          : error instanceof Error
+          ? error.message
+          : "Failed to apply coupon";
+      toast.error(errorMessage || "Failed to apply coupon");
     }
   };
 
   const handleRemoveCoupon = async (code: string) => {
     try {
       await removeCoupon(code);
+      toast.success(`Coupon ${code} removed`);
     } catch {
-      setError("Failed to remove coupon");
-      setTimeout(() => setError(""), 3000);
+      toast.error("Failed to remove coupon");
     }
   };
 
@@ -94,10 +96,6 @@ function App() {
             )}
           </div>
         </div>
-
-        {error && <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">{error}</div>}
-
-        {success && <div className="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">{success}</div>}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Products Section */}
@@ -244,6 +242,7 @@ function App() {
       </div>
 
       <GlobalAuthModal />
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
     </div>
   );
 }

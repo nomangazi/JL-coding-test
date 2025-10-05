@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { toast } from "react-toastify";
 import { usersApi } from "../lib/api";
 import type { UserCreateRequest, AuthState } from "../types";
 
@@ -44,19 +45,24 @@ export const useUserStore = create<UserStore>()(
             const { useCartStore } = await import("./cartStore");
             useCartStore.getState().setUserId(user.id.toString());
 
+            toast.success(`Welcome back, ${user.name}!`);
             return true;
           } else {
+            const errorMsg = "User not found. Please check your email or register.";
             set({
               isLoading: false,
-              error: "User not found. Please check your email or register.",
+              error: errorMsg,
             });
+            toast.error(errorMsg);
             return false;
           }
         } catch {
+          const errorMsg = "Login failed. Please try again.";
           set({
             isLoading: false,
-            error: "Login failed. Please try again.",
+            error: errorMsg,
           });
+          toast.error(errorMsg);
           return false;
         }
       },
@@ -78,6 +84,7 @@ export const useUserStore = create<UserStore>()(
           const { useCartStore } = await import("./cartStore");
           useCartStore.getState().setUserId(newUser.id.toString());
 
+          toast.success(`Welcome, ${newUser.name}! Your account has been created.`);
           return true;
         } catch (error: unknown) {
           let errorMessage = "Registration failed. Please try again.";
@@ -102,6 +109,7 @@ export const useUserStore = create<UserStore>()(
             error: errorMessage,
           });
 
+          toast.error(errorMessage);
           return false;
         }
       },
@@ -118,6 +126,8 @@ export const useUserStore = create<UserStore>()(
           useCartStore.getState().setUserId("");
           useCartStore.getState().clearPendingAction();
         });
+
+        toast.info("You have been logged out successfully");
       },
 
       clearError: () => {

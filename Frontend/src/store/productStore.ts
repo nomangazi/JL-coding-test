@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { toast } from "react-toastify";
 import { productsApi } from "../lib/api";
 import type { Product } from "../types";
 
@@ -20,8 +21,10 @@ export const useProductStore = create<ProductStore>((set) => ({
     try {
       const { data } = await productsApi.getAll();
       set({ products: data, loading: false });
-    } catch (error: unknown) {
-      set({ error: "Failed to fetch products", loading: false });
+    } catch {
+      const errorMsg = "Failed to fetch products";
+      set({ error: errorMsg, loading: false });
+      toast.error(errorMsg);
     }
   },
 }));
