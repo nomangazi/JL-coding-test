@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { toast } from "react-toastify";
 import { usersApi } from "../lib/api";
+import { useCartStore } from "./cartStore";
 import type { UserCreateRequest, AuthState } from "../types";
 
 interface UserStore extends AuthState {
@@ -25,9 +26,7 @@ export const useUserStore = create<UserStore>()(
         if (user) {
           set({ isAuthenticated: true });
           // Initialize cart store with user ID when restoring session
-          import("./cartStore").then(({ useCartStore }) => {
-            useCartStore.getState().setUserId(user.id.toString());
-          });
+          useCartStore.getState().setUserId(user.id.toString());
         }
       },
 
@@ -46,7 +45,6 @@ export const useUserStore = create<UserStore>()(
             });
 
             // Update cart store with user ID
-            const { useCartStore } = await import("./cartStore");
             useCartStore.getState().setUserId(user.id.toString());
 
             toast.success(`Welcome back, ${user.name}!`);
@@ -85,7 +83,6 @@ export const useUserStore = create<UserStore>()(
           });
 
           // Update cart store with user ID
-          const { useCartStore } = await import("./cartStore");
           useCartStore.getState().setUserId(newUser.id.toString());
 
           toast.success(`Welcome, ${newUser.name}! Your account has been created.`);
@@ -126,10 +123,8 @@ export const useUserStore = create<UserStore>()(
         });
 
         // Clear cart store
-        import("./cartStore").then(({ useCartStore }) => {
-          useCartStore.getState().setUserId("");
-          useCartStore.getState().clearPendingAction();
-        });
+        useCartStore.getState().setUserId("");
+        useCartStore.getState().clearPendingAction();
 
         toast.info("You have been logged out successfully");
       },

@@ -38,6 +38,8 @@ export const useCartStore = create<CartStore>((set, get) => ({
     const state = get();
     // Only fetch cart if userId is a valid non-empty string and represents a positive integer
     if (!state.userId || state.userId === "" || isNaN(Number(state.userId)) || Number(state.userId) <= 0) {
+      // Clear cart and set loading to false if no valid userId
+      set({ cart: null, loading: false });
       return;
     }
 

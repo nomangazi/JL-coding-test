@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useCartStore } from "../store/cartStore";
+import { useUserStore } from "../store/userStore";
 import { formatCurrency } from "../lib/utils";
 import { Button } from "../components/ui/button";
 import { Skeleton } from "../components/ui/skeleton";
@@ -8,6 +9,7 @@ import { ShoppingCart, Loader2 } from "lucide-react";
 
 export function CartPage() {
   const { cart, loading: cartLoading, fetchCart, updateItem, removeItem, applyCoupon, removeCoupon } = useCartStore();
+  const { isAuthenticated } = useUserStore();
   const [couponCode, setCouponCode] = useState("");
   const [updatingItems, setUpdatingItems] = useState<Set<number>>(new Set());
 
@@ -106,7 +108,15 @@ export function CartPage() {
         </div>
       )}
 
-      {cart && (
+      {!cartLoading && !isAuthenticated && (
+        <div className="bg-white rounded-lg shadow p-12 text-center">
+          <ShoppingCart className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+          <p className="text-gray-500 text-lg mb-4">Please login to view your cart</p>
+          <Button onClick={() => useCartStore.getState().setShowAuthModal(true)}>Login</Button>
+        </div>
+      )}
+
+      {!cartLoading && isAuthenticated && cart && (
         <>
           {cart.items.length === 0 ? (
             <div className="bg-white rounded-lg shadow p-12 text-center">
